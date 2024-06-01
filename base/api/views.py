@@ -1,5 +1,6 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.db.models import Q
 from base.models import Room
 from .serializers import RoomSerializer
 
@@ -33,7 +34,7 @@ def searchRooms(request):
 
     if request.GET.get('search') != None:
         search = request.GET.get('search')
-        rooms = Room.objects.filter(topic__name__icontains=search)
+        rooms = Room.objects.filter(Q(name__icontains=search) | Q(topic__name__icontains=search) | Q(description__icontains=search) | Q(host__username__icontains=search))
     
     searializer = RoomSerializer(rooms, many=True)
     return Response(searializer.data)
