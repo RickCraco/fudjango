@@ -72,8 +72,11 @@ def home(request):
     if request.GET.get('search') != None:
         search = request.GET.get('search')
         rooms = rooms.filter(Q(name__icontains=search) | Q(topic__name__icontains=search) | Q(description__icontains=search) | Q(host__username__icontains=search))
-        
-    topics = Topic.objects.all()[0:5]
+
+    if Topic.objects.all().count() >= 10:  
+        topics = Topic.objects.all()[0:5]
+    
+    topics = Topic.objects.all()
 
     context = {'rooms': rooms, 'topics': topics, 'room_messages': room_messages}
     return render(request, 'base/home.html', context)
